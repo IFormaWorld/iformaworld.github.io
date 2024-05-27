@@ -3,6 +3,19 @@
     <title>AR.js Multiple Image Tracking with A-Frame</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/2.0.8/aframe/build/aframe-ar.js"></script>
+    <script>
+      // Override the canvas context creation to include willReadFrequently
+      (function() {
+        const originalGetContext = HTMLCanvasElement.prototype.getContext;
+        HTMLCanvasElement.prototype.getContext = function(type, attributes) {
+          if (type === '2d') {
+            attributes = attributes || {};
+            attributes.willReadFrequently = true;
+          }
+          return originalGetContext.call(this, type, attributes);
+        };
+      })();
+    </script>
   </head>
   <body style="margin: 0; overflow: hidden;">
     <a-scene embedded arjs="sourceType: webcam; trackingMethod: best; debugUIEnabled: false;">
