@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize MindAR
     const mindarThree = new MindARThree({
       container: document.body,
-      imageTargetSrc: 'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20240531-razlaga-racuna-ee/assets/targets/razlaga-racuna.mind',
+      imageTargetSrc: 'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20240531-razlaga-racuna-ee/assets/targets/targets.mind',
     });
     const { renderer, scene, camera } = mindarThree;
 
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadModel = (url) => {
       return new Promise((resolve, reject) => {
         gltfLoader.load(url, (gltf) => {
-          gltf.scene.scale.set(0.1, 0.1, 0.1);
+          gltf.scene.scale.set(0.5, 0.5, 0.5);
           gltf.scene.position.set(0, -0.4, 0);
           resolve(gltf);
         }, undefined, reject);
