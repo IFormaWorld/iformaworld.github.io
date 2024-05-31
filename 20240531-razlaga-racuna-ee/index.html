@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
   <title>AR za razlago računov električne energije - MindAR with Three.js - Multiple Image Targets</title>
@@ -12,7 +13,7 @@
       const start = async () => {
         const mindarThree = new MindARThree({
           container: document.body,
-          imageTargetSrc: 'https://iformaworld.github.io/20240531-razlaga-racuna-ee/assets/targets/razlaga-racuna.mind',
+          imageTargetSrc: 'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20240531-razlaga-racuna-ee/assets/targets/razlaga-racuna.mind',
         });
         const { renderer, scene, camera } = mindarThree;
 
@@ -24,36 +25,41 @@
 
         // Load models
         const modelUrls = [
-          'https://iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/dobavitelj/scene.gltf',
-          'https://iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/smm/scene.gltf',
-          'https://iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/znesek/scene.gltf',
-          'https://iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/poraba/scene.gltf',
-          'https://iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/reklamacija/scene.gltf'
+          'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/dobavitelj/scene.gltf',
+          'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/smm/scene.gltf',
+          'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/znesek/scene.gltf',
+          'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/poraba/scene.gltf',
+          'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/reklamacija/scene.gltf'
         ];
-        const models = await Promise.all(modelUrls.map(url => loadModel(url, gltfLoader)));
+        
+        // Function to load model
+        const loadModel = (url, loader) => {
+          return new Promise((resolve, reject) => {
+            loader.load(url, (gltf) => {
+              gltf.scene.scale.set(0.1, 0.1, 0.1);
+              gltf.scene.position.set(0, -0.4, 0);
+              resolve(gltf);
+            }, undefined, reject);
+          });
+        };
 
-        // Create anchors
-        const anchors = models.map((model, index) => {
-          const anchor = mindarThree.addAnchor(index);
-          anchor.group.add(model.scene);
-          return anchor;
-        });
+        try {
+          const models = await Promise.all(modelUrls.map(url => loadModel(url, gltfLoader)));
 
-        await mindarThree.start();
+          // Create anchors
+          models.forEach((model, index) => {
+            const anchor = mindarThree.addAnchor(index);
+            anchor.group.add(model.scene);
+          });
 
-        renderer.setAnimationLoop(() => {
-          renderer.render(scene, camera);
-        });
-      };
+          await mindarThree.start();
 
-      const loadModel = (url, loader) => {
-        return new Promise((resolve, reject) => {
-          loader.load(url, (gltf) => {
-            gltf.scene.scale.set(0.1, 0.1, 0.1);
-            gltf.scene.position.set(0, -0.4, 0);
-            resolve(gltf);
-          }, undefined, reject);
-        });
+          renderer.setAnimationLoop(() => {
+            renderer.render(scene, camera);
+          });
+        } catch (error) {
+          console.error('Error loading models:', error);
+        }
       };
 
       start();
