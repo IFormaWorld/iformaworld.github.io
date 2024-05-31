@@ -6,25 +6,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const mindarThree = new window.MINDAR.IMAGE.MindARThree({
       container: document.body,
       imageTargetSrc: '../../assets/targets/razlaga-racuna2.mind'
+      maxTrack: 2,
     });
     const {renderer, scene, camera} = mindarThree;
 
     const light = new THREE.HemisphereLight( 0xffffff, 0xbbbbff, 1 );
     scene.add(light);
 
-    const dobavitelj = await loadGLTF('../../assets/models/razlaga-racuna-dobavitelj/dobavitelj.gltf');
-    dobavitelj.scene.scale.set(0, 0, 0);
-    dobavitelj.scene.position.set(0, 0, 0);
+   const raccoon = await loadGLTF('../../assets/models/musicband-raccoon/scene.gltf');
+    raccoon.scene.scale.set(0.1, 0.1, 0.1);
+    raccoon.scene.position.set(0, -0.4, 0);
 
-    const smm = await loadGLTF('../../assets/models/razlaga-racuna-smm/smm.gltf');
-    smm.scene.scale.set(0, 0, 0);
-    smm.scene.position.set(0, 0, 0);
+    const bear = await loadGLTF('../../assets/models/musicband-bear/scene.gltf');
+    bear.scene.scale.set(0.1, 0.1, 0.1);
+    bear.scene.position.set(0, -0.4, 0);
 
-    const dobaviteljAnchor = mindarThree.addAnchor(0);
-    dobaviteljAnchor.group.add(dobavitelj.dobavitelj);
+    const raccoonAnchor = mindarThree.addAnchor(0);
+    raccoonAnchor.group.add(raccoon.scene);
 
-    const smmAnchor = mindarThree.addAnchor(1);
-    smmAnchor.group.add(smm.smm);
+    const bearAnchor = mindarThree.addAnchor(1);
+    bearAnchor.group.add(bear.scene);
 
     await mindarThree.start();
     renderer.setAnimationLoop(() => {
