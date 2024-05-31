@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MindAR with Three.js</title>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.137.5/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"></script>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    #loading { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #fff; display: flex; align-items: center; justify-content: center; }
+  </style>
+</head>
+<body>
+  <div id="loading">Loading...</div>
+  <div id="ar-container"></div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const mindAR = new window.MINDAR.IMAGE.MindARThree({
+        container: document.querySelector("#ar-container"),
+        imageTargetSrc: "https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/band-example/band.mind"
+      });
+
+      const { renderer, scene, camera } = mindAR;
+
+      // Hide loading overlay when AR is ready
+      window.addEventListener("arjs-nft-loaded", () => {
+        document.getElementById('loading').style.display = 'none';
+      });
+
+      // Create 3D objects for each target
+      const raccoonGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+      const raccoonMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+      const raccoonMesh = new THREE.Mesh(raccoonGeometry, raccoonMaterial);
+
+      const bearGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+      const bearMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+      const bearMesh = new THREE.Mesh(bearGeometry, bearMaterial);
+
+      // Add targets
+      const raccoonAnchor = mindAR.addAnchor(0);
+      raccoonAnchor.group.add(raccoonMesh);
+
+      const bearAnchor = mindAR.addAnchor(1);
+      bearAnchor.group.add(bearMesh);
+
+      // Start the AR experience
+      mindAR.start();
+
+      // Animation loop
+      const clock = new THREE.Clock();
+      const animate = () => {
+        const delta = clock.getDelta();
+        raccoonMesh.rotation.y += delta * 0.5;
+        bearMesh.rotation.y += delta * 0.5;
+
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+      };
+
+      animate();
+    });
+  </script>
+</body>
+</html>
