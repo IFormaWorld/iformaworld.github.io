@@ -1,24 +1,49 @@
 <html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+<head>
+  <title>MindAR with Three.js</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script type="module" src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/three@0.137.5/build/three.module.js"></script>
+  <script type="module">
+    import {loadGLTF} from 'https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/utils/loader.js';
+    import { MindARThree } from 'https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js';
+    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.137.5/build/three.module.js';
 
-    <script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three@0.139.1/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@0.139.1/examples/jsm/",
-        "mindar-image-three":"https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"
+    document.addEventListener('DOMContentLoaded', () => {
+      const start = async() => {
+        const mindarThree = new MindARThree({
+          container: document.body,
+          imageTargetSrc: 'https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/band-example/band.mind',
+        });
+        const {renderer, scene, camera} = mindarThree;
+
+        const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
+        scene.add(light);
+
+        const raccoon = await loadGLTF('https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/band-example/raccoon/scene.gltf');
+        raccoon.scene.scale.set(0.1, 0.1, 0.1);
+        raccoon.scene.position.set(0, -0.4, 0);
+
+        const bear = await loadGLTF('https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/band-example/bear/scene.gltf');
+        bear.scene.scale.set(0.1, 0.1, 0.1);
+        bear.scene.position.set(0, -0.4, 0);
+
+        const raccoonAnchor = mindarThree.addAnchor(0);
+        raccoonAnchor.group.add(raccoon.scene);
+
+        const bearAnchor = mindarThree.addAnchor(1);
+        bearAnchor.group.add(bear.scene);
+
+        await mindarThree.start();
+
+        renderer.setAnimationLoop(() => {
+          renderer.render(scene, camera);
+        });
       }
-    }
-    </script>
-
-    <script src="./main.js" type="module"></script>
-    <style>
-      html, body {position: relative; margin: 0; width: 100%; height: 100%; overflow: hidden}
-    </style>
-  </head>
-  <body>
-  </body>
+      start();
+    });
+  </script>
+</head>
+<body>
+</body>
 </html>
