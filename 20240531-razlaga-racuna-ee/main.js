@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadModel = (url) => {
       return new Promise((resolve, reject) => {
         gltfLoader.load(url, (gltf) => {
-          gltf.scene.scale.set(0.5, 0.5, 0.5);
+          gltf.scene.scale.set(5, 5, 5);
           gltf.scene.position.set(0, -0.4, 0);
           resolve(gltf);
         }, undefined, reject);
