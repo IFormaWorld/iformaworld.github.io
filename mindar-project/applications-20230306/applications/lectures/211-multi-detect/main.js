@@ -29,6 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
     bearAnchor.group.add(bear.scene);
 
     await mindarThree.start();
+    
+    console.log(material);
+
     renderer.setAnimationLoop(() => {
       renderer.render(scene, camera);
     });
