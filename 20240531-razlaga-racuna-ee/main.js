@@ -26,13 +26,11 @@ document.addEventListener('DOMContentLoaded', () => {
       'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/reklamacija/scene.gltf'
     ];
 
-   // Function to load model with increased scale
-    const loadModel = (url, loader) => {
+  // Function to load model
+    const loadModel = (url) => {
       return new Promise((resolve, reject) => {
-        loader.load(url, (gltf) => {
-          // Set the scale to make the model larger
-          const scale = 3; // Adjust this value as needed
-          gltf.scene.scale.set(scale, scale, scale);
+        gltfLoader.load(url, (gltf) => {
+          gltf.scene.scale.set(0.1, 0.1, 0.1);
           gltf.scene.position.set(0, -0.4, 0);
           resolve(gltf);
         }, undefined, reject);
