@@ -13,12 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
     scene.add(light);
 
     const dobavitelj = await loadGLTF('../../assets/models/razlaga-racuna-dobavitelj/dobavitelj.gltf');
-    dobavitelj.dobavitelj.scale.set(0.1, 0.1, 0.1);
-    dobavitelj.dobavitelj.position.set(0, -0.4, 0);
+    dobavitelj.scene.scale.set(0, 0, 0);
+    dobavitelj.scene.position.set(0, 0, 0);
 
     const smm = await loadGLTF('../../assets/models/razlaga-racuna-smm/smm.gltf');
-    smm.smm.scale.set(0.1, 0.1, 0.1);
-    smm.smm.position.set(0, -0.4, 0);
+    smm.scene.scale.set(0, 0, 0);
+    smm.scene.position.set(0, 0, 0);
 
     const dobaviteljAnchor = mindarThree.addAnchor(0);
     dobaviteljAnchor.group.add(dobavitelj.dobavitelj);
