@@ -13,18 +13,18 @@ document.addEventListener('DOMContentLoaded', () => {
     scene.add(light);
 
     const dobavitelj = await loadGLTF('../../assets/models/razlaga-racuna-dobavitelj/dobavitelj.gltf');
-    raccoon.scene.scale.set(0.1, 0.1, 0.1);
-    raccoon.scene.position.set(0, -0.4, 0);
+    dobavitelj.dobavitelj.scale.set(0.1, 0.1, 0.1);
+    dobavitelj.dobavitelj.position.set(0, -0.4, 0);
 
     const smm = await loadGLTF('../../assets/models/razlaga-racuna-smm/smm.gltf');
-    bear.scene.scale.set(0.1, 0.1, 0.1);
-    bear.scene.position.set(0, -0.4, 0);
+    smm.smm.scale.set(0.1, 0.1, 0.1);
+    smm.smm.position.set(0, -0.4, 0);
 
-    const raccoonAnchor = mindarThree.addAnchor(0);
-    raccoonAnchor.group.add(dobavitelj.scene);
+    const dobaviteljAnchor = mindarThree.addAnchor(0);
+    dobaviteljAnchor.group.add(dobavitelj.dobavitelj);
 
-    const bearAnchor = mindarThree.addAnchor(1);
-    bearAnchor.group.add(smm.scene);
+    const smmAnchor = mindarThree.addAnchor(1);
+    smmAnchor.group.add(smm.smm);
 
     await mindarThree.start();
     renderer.setAnimationLoop(() => {
