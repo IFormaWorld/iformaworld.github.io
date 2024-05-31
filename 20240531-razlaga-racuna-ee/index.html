@@ -13,7 +13,7 @@
       const start = async () => {
         const mindarThree = new MindARThree({
           container: document.body,
-          imageTargetSrc: 'path/to/your/targets.mind',
+          imageTargetSrc: 'https://iformaworld.github.io/20240531-razlaga-racuna-ee/assets/targets/razlaga-racuna.mind',
         });
         const { renderer, scene, camera } = mindarThree;
 
@@ -25,11 +25,11 @@
 
         // Load models
         const modelUrls = [
-          'path/to/model1.gltf',
-          'path/to/model2.gltf',
-          'path/to/model3.gltf',
-          'path/to/model4.gltf',
-          'path/to/model5.gltf'
+          'https://iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/dobavitelj/scene.gltf',
+          'https://iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/smm/scene.gltf',
+          'https://iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/znesek/scene.gltf',
+          'https://iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/poraba/scene.gltf',
+          'https://iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/reklamacija/scene.gltf'
         ];
         const models = await Promise.all(modelUrls.map(url => loadModel(url, gltfLoader)));
 
