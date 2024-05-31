@@ -1,15 +1,17 @@
-<html>
+<html lang=en>
 <head>
   <title>AR za razlago računov električne energije - MindAR with Three.js - Multiple Image Targets</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script type="module">
-    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.137.5/build/three.module.js';
-    import { MindARThree } from 'https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js';
-    import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.137.5/examples/jsm/loaders/GLTFLoader.js';
-
+  <!-- Load Three.js -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.137.5/build/three.min.js"></script>
+  <!-- Load MindAR Three.js integration -->
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"></script>
+  <!-- Load GLTFLoader -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.137.5/examples/js/loaders/GLTFLoader.js"></script>
+  <script>
     document.addEventListener('DOMContentLoaded', () => {
       const start = async () => {
-        const mindarThree = new MindARThree({
+        const mindarThree = new window.MINDAR.IMAGE.MindARThree({
           container: document.body,
           imageTargetSrc: 'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20240531-razlaga-racuna-ee/assets/targets/razlaga-racuna.mind',
         });
@@ -19,7 +21,7 @@
         const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
         scene.add(light);
 
-        const gltfLoader = new GLTFLoader();
+        const gltfLoader = new THREE.GLTFLoader();
 
         // Load models
         const modelUrls = [
