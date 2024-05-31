@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MindAR with Three.js - Multiple Image Targets</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script type="module" src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/three@0.137.5/build/three.module.js"></script>
+  <script type="module">
+    import { MindARThree } from 'https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js';
+    import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.137.5/examples/jsm/loaders/GLTFLoader.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const start = async () => {
+        const mindarThree = new MindARThree({
+          container: document.body,
+          imageTargetSrc: 'path/to/your/targets.mind',
+        });
+        const { renderer, scene, camera } = mindarThree;
+
+        // Add light to the scene
+        const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
+        scene.add(light);
+
+        const gltfLoader = new GLTFLoader();
+
+        // Load models
+        const modelUrls = [
+          'path/to/model1.gltf',
+          'path/to/model2.gltf',
+          'path/to/model3.gltf',
+          'path/to/model4.gltf',
+          'path/to/model5.gltf'
+        ];
+        const models = await Promise.all(modelUrls.map(url => loadModel(url, gltfLoader)));
+
+        // Create anchors
+        const anchors = models.map((model, index) => {
+          const anchor = mindarThree.addAnchor(index);
+          anchor.group.add(model.scene);
+          return anchor;
+        });
+
+        await mindarThree.start();
+
+        renderer.setAnimationLoop(() => {
+          renderer.render(scene, camera);
+        });
+      };
+
+      const loadModel = (url, loader) => {
+        return new Promise((resolve, reject) => {
+          loader.load(url, (gltf) => {
+            gltf.scene.scale.set(0.1, 0.1, 0.1);
+            gltf.scene.position.set(0, -0.4, 0);
+            resolve(gltf);
+          }, undefined, reject);
+        });
+      };
+
+      start();
+    });
+  </script>
+</head>
+<body>
+</body>
+</html>
