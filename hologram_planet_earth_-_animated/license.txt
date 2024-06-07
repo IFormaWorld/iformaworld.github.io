@@ -1,0 +1,8 @@
+Model Information:
+* title:	Hologram Planet Earth - Animated
+* source:	https://sketchfab.com/3d-models/hologram-planet-earth-animated-d00d5b072512496a9e83735c88c23a30
+* author:	tamminen (https://sketchfab.com/tamminen)
+
+Model License:
+* license type:	SKETCHFAB Standard (https://sketchfab.com/licenses)
+* requirements:	Under basic restrictions, use worldwide, on all types of media, commercially or not, and in all types of derivative works
