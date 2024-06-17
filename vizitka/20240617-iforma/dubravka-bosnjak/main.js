@@ -1,11 +1,8 @@
-
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MindARThree } from 'mindar-image-three';
 
 document.addEventListener('DOMContentLoaded', () => {
   const start = async () => {
-    // Initialize MindAR
     const mindarThree = new MindARThree({
       container: document.body,
       imageTargetSrc: 'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/vizitka/20240617-iforma/dubravka-bosnjak/assets/targets/vizitka.mind',
@@ -16,42 +13,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
     scene.add(light);
 
-    const gltfLoader = new GLTFLoader();
+    // Load 3D model from Spline
+    const splineIframe = document.getElementById('spline-scene');
 
-    // Load models
-    const modelUrls = [
-      'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/vizitka/20240617-iforma/dubravka-bosnjak/assets/vizitka/vizitka.gltf',
-      'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/vizitka/20240617-iforma/dubravka-bosnjak/assets/vizitka/vizitka.gltf',
-    ];
+    // Create anchor
+    const anchor = mindarThree.addAnchor(0);
 
-  // Function to load model
-    const loadModel = (url) => {
-      return new Promise((resolve, reject) => {
-        gltfLoader.load(url, (gltf) => {
-          gltf.scene.scale.set(2, 2, 2);
-          gltf.scene.position.set(0, -0.4, 0);
-          resolve(gltf);
-        }, undefined, reject);
-      });
-    };
+    // Use CSS 3D Renderer for placing iframe
+    const css3dRenderer = new THREE.CSS3DRenderer();
+    css3dRenderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(css3dRenderer.domElement);
 
-    try {
-      const models = await Promise.all(modelUrls.map(loadModel));
+    const css3dObject = new THREE.CSS3DObject(splineIframe);
+    css3dObject.position.set(0, 0, 0);
+    css3dObject.scale.set(0.005, 0.005, 0.005); // Adjust scale as needed
+    anchor.group.add(css3dObject);
 
-      // Create anchors for each model
-      models.forEach((model, index) => {
-        const anchor = mindarThree.addAnchor(index);
-        anchor.group.add(model.scene);
-      });
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      css3dRenderer.setSize(window.innerWidth, window.innerHeight);
+    });
 
-      await mindarThree.start();
-
-      renderer.setAnimationLoop(() => {
-        renderer.render(scene, camera);
-      });
-    } catch (error) {
-      console.error('Error loading models:', error);
-    }
+    await mindarThree.start();
+    renderer.setAnimationLoop(() => {
+      renderer.render(scene, camera);
+      css3dRenderer.render(scene, camera);
+    });
   };
 
   start();
