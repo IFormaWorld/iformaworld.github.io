@@ -14,8 +14,12 @@ document.addEventListener('DOMContentLoaded', () => {
     scene.add(light);
 
     // Load 3D model from Spline
-    const splineIframe = document.getElementById('spline-scene');
-
+    const splineIframe = document.createElement('iframe');
+    splineIframe.src = "https://my.spline.design/roomgirlworkingcopy-b376e1ae9ed5dee18782669017f21f04/";
+    splineIframe.id = "spline-scene";
+    splineIframe.allow = "fullscreen";
+    splineIframe.style.background = "transparent";
+    
     // Create anchor
     const anchor = mindarThree.addAnchor(0);
 
