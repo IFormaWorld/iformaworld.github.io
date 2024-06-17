@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadModel = (url) => {
       return new Promise((resolve, reject) => {
         gltfLoader.load(url, (gltf) => {
-          gltf.scene.scale.set(0.1, 0.1, 0.1);
+          gltf.scene.scale.set(1, 1, 1);
           gltf.scene.position.set(0, -0.4, 0);
           resolve(gltf);
         }, undefined, reject);
