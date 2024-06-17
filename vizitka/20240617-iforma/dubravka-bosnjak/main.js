@@ -20,8 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Load models
     const modelUrls = [
+      'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/vizitka/20240617-iforma/dubravka-bosnjak/assets/vizitka/vizitka.gltf',
       'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/vizitka/20240617-iforma/dubravka-bosnjak/assets/models/cloud/device_cloud.gltf',
-      'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/smm/scene.gltf',
     ];
 
   // Function to load model
