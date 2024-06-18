@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { MindARThree } from 'mindar-image-three';
+import { CSS3DRenderer, CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const start = async () => {
@@ -19,16 +20,20 @@ document.addEventListener('DOMContentLoaded', () => {
     splineIframe.id = "spline-scene";
     splineIframe.allow = "fullscreen";
     splineIframe.style.background = "transparent";
-    
+    splineIframe.style.position = "absolute";
+
     // Create anchor
     const anchor = mindarThree.addAnchor(0);
 
     // Use CSS 3D Renderer for placing iframe
-    const css3dRenderer = new THREE.CSS3DRenderer();
+    const css3dRenderer = new CSS3DRenderer();
     css3dRenderer.setSize(window.innerWidth, window.innerHeight);
+    css3dRenderer.domElement.style.position = "absolute";
+    css3dRenderer.domElement.style.top = "0";
+    css3dRenderer.domElement.style.left = "0";
     document.body.appendChild(css3dRenderer.domElement);
 
-    const css3dObject = new THREE.CSS3DObject(splineIframe);
+    const css3dObject = new CSS3DObject(splineIframe);
     css3dObject.position.set(0, 0, 0);
     css3dObject.scale.set(0.005, 0.005, 0.005); // Adjust scale as needed
     anchor.group.add(css3dObject);
