@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { MindARThree } from 'mindar-image-three';
-import { CSS3DObject, CSS3DRenderer } from 'three/addons/renderers/CSS3DRenderer.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const start = async () => {
@@ -14,38 +14,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
     scene.add(light);
 
-    // Create CSS3DRenderer
-    const css3dRenderer = new CSS3DRenderer();
-    css3dRenderer.setSize(window.innerWidth, window.innerHeight);
-    css3dRenderer.domElement.style.position = 'absolute';
-    css3dRenderer.domElement.style.top = 0;
-    document.body.appendChild(css3dRenderer.domElement);
+    // Load GLTF model
+    const gltfLoader = new GLTFLoader();
+    const modelUrl = 'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/vizitka/20240617-iforma/dubravka-bosnjak/assets/models/room-girl-working/room_girl_working.gltf';
 
-    // Load 3D model from Spline
-    const splineIframe = document.createElement('iframe');
-    splineIframe.src = "https://my.spline.design/roomgirlworkingcopy-b376e1ae9ed5dee18782669017f21f04/";
-    splineIframe.id = "spline-scene";
-    splineIframe.allow = "fullscreen";
-    splineIframe.style.background = "transparent";
-    
-    // Create anchor and add iframe as CSS3DObject
-    const anchor = mindarThree.addAnchor(0);
-    const css3dObject = new CSS3DObject(splineIframe);
-    css3dObject.position.set(0, 0, 0);
-    css3dObject.scale.set(0.005, 0.005, 0.005); // Adjust scale as needed
-    anchor.group.add(css3dObject);
+    gltfLoader.load(modelUrl, (gltf) => {
+      const model = gltf.scene;
+      model.scale.set(0.01, 0.01, 0.01); // Adjust scale as needed
+      model.position.set(0, -0.5, 0); // Adjust position as needed
+
+      // Create anchor and add model
+      const anchor = mindarThree.addAnchor(0);
+      anchor.group.add(model);
+    }, undefined, (error) => {
+      console.error('Error loading model:', error);
+    });
 
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
-      css3dRenderer.setSize(window.innerWidth, window.innerHeight);
     });
 
     await mindarThree.start();
     renderer.setAnimationLoop(() => {
       renderer.render(scene, camera);
-      css3dRenderer.render(scene, camera);
     });
   };
 
