@@ -5,7 +5,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 document.addEventListener('DOMContentLoaded', () => {
   const start = async () => {
     const mindarThree = new MindARThree({
-      container: document.body,
+      container: document.querySelector('.mindar-container'),
       imageTargetSrc: 'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/vizitka/20240617-iforma/dubravka-bosnjak/assets/targets/targets.mind',
     });
     const { renderer, scene, camera } = mindarThree;
@@ -21,10 +21,10 @@ document.addEventListener('DOMContentLoaded', () => {
     gltfLoader.load(modelUrl, (gltf) => {
       const model = gltf.scene;
       model.scale.set(0.4, 0.4, 0.4); // Adjust scale as needed
-      model.position.set(0, 0, 0); // Adjust position as needed
+      model.position.set(0, -0.5, 0); // Adjust position as needed
 
       // Rotate the model 90 degrees on the X axis
-      model.rotateX(Math.PI / 2);
+      model.rotation.x = Math.PI / 2;
 
       // Create anchor and add model
       const anchor = mindarThree.addAnchor(0);
