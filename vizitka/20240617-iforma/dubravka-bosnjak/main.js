@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Load GLTF model
     const gltfLoader = new GLTFLoader();
-    const modelUrl = 'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/vizitka/20240617-iforma/dubravka-bosnjak/assets/models/room-girl-working/room_girl_working.gltf';
+    const modelUrl = 'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/vizitka/20240617-iforma/dubravka-bosnjak/assets/models/room-girl-working/iforma_room_girl_working.gltf';
 
     gltfLoader.load(modelUrl, (gltf) => {
       const model = gltf.scene;
