@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const start = async () => {
     const mindarThree = new MindARThree({
       container: document.body,
-      imageTargetSrc: 'path/to/your/targets.mind', // Replace with the actual path to your .mind file
+      imageTargetSrc: 'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/brosura/20240619-geometrijska-telesa/assets/targets/targets.mind',
     });
     const { renderer, scene, camera } = mindarThree;
 
