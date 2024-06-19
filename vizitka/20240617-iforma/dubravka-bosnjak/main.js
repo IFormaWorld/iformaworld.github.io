@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const start = async () => {
     const mindarThree = new MindARThree({
       container: document.body,
-      imageTargetSrc: 'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/vizitka/20240617-iforma/dubravka-bosnjak/assets/targets/vizitka.mind',
+      imageTargetSrc: 'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/vizitka/20240617-iforma/dubravka-bosnjak/assets/targets/targets.mind',
     });
     const { renderer, scene, camera } = mindarThree;
 
