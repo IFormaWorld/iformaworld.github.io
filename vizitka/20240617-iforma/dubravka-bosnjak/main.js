@@ -20,8 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     gltfLoader.load(modelUrl, (gltf) => {
       const model = gltf.scene;
-      model.scale.set(0.1, 0.1, 0.1); // Adjust scale as needed
-      model.position.set(0, -0.5, 0); // Adjust position as needed
+      model.scale.set(0.5, 0.5, 0.5); // Adjust scale as needed
+      model.position.set(0, 0, 0); // Adjust position as needed
 
       // Create anchor and add model
       const anchor = mindarThree.addAnchor(0);
