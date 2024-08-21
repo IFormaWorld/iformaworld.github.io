@@ -1,5 +1,3 @@
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MindARThree } from 'mindar-image-three';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -9,51 +7,43 @@ document.addEventListener('DOMContentLoaded', () => {
       container: document.body,
       imageTargetSrc: 'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20240531-razlaga-racuna-ee/assets/targets/razlaga-racuna.mind',
     });
+
     const { renderer, scene, camera } = mindarThree;
 
-    // Add light to the scene
-    const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
-    scene.add(light);
-
-    const gltfLoader = new GLTFLoader();
-
-    // Load models
-    const modelUrls = [
-      'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/dobavitelj/scene.gltf',
-      'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/smm/scene.gltf',
-      'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/znesek/scene.gltf',
-      'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/poraba/scene.gltf',
-      'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/reklamacija/scene.gltf'
+    // Define the URLs for each target
+    const splineUrls = [
+      'https://my.spline.design/untitled-1c5ee70e28f264b5e98eb2316a564f38/', // dobavitelj
+      // Add more URLs for the other targets as needed
     ];
 
-  // Function to load model
-    const loadModel = (url) => {
-      return new Promise((resolve, reject) => {
-        gltfLoader.load(url, (gltf) => {
-          gltf.scene.scale.set(0.1, 0.1, 0.1);
-          gltf.scene.position.set(0, -0.4, 0);
-          resolve(gltf);
-        }, undefined, reject);
-      });
-    };
+    // Create an iframe for each Spline model
+    const iframes = splineUrls.map((url, index) => {
+      const iframe = document.createElement('iframe');
+      iframe.src = url;
+      iframe.classList.add('iframe-container');
+      iframe.style.zIndex = index + 1;
+      document.body.appendChild(iframe);
+      return iframe;
+    });
 
-    try {
-      const models = await Promise.all(modelUrls.map(loadModel));
+    // Create anchors and toggle the corresponding iframe visibility
+    splineUrls.forEach((url, index) => {
+      const anchor = mindarThree.addAnchor(index);
+      anchor.onTargetFound = () => {
+        iframes.forEach((iframe, i) => {
+          iframe.style.display = i === index ? 'block' : 'none';
+        });
+      };
+      anchor.onTargetLost = () => {
+        iframes[index].style.display = 'none';
+      };
+    });
 
-      // Create anchors for each model
-      models.forEach((model, index) => {
-        const anchor = mindarThree.addAnchor(index);
-        anchor.group.add(model.scene);
-      });
+    await mindarThree.start();
 
-      await mindarThree.start();
-
-      renderer.setAnimationLoop(() => {
-        renderer.render(scene, camera);
-      });
-    } catch (error) {
-      console.error('Error loading models:', error);
-    }
+    renderer.setAnimationLoop(() => {
+      renderer.render(scene, camera);
+    });
   };
 
   start();
