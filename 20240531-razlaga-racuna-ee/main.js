@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
       'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/znesek/scene.gltf',
       'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/poraba/scene.gltf',
       'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/reklamacija/scene.gltf'
-    ];
+    ]; 
 
   // Function to load model
     const loadModel = (url) => {
