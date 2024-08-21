@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Load models
     const modelUrls = [
-      'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/dobavitelj/scene.gltf',
+      'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/dobavitelj/scene1.gltf',
       'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/smm/scene.gltf',
       'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/znesek/scene.gltf',
       'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/poraba/scene.gltf',
