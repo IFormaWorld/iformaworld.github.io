@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>AR za razlago računov električne energije - MindAR with Three.js - Multiple Image Targets</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.147.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.147.0/examples/jsm/",
+      "mindar-image-three": "https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"
+    }
+  }
+  </script>
+  <script src="./main.js" type="module"></script>
+  <style>
+    html, body {position: relative; margin: 0; width: 100%; height: 100%; overflow: hidden;}
+    #landing-page {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: black;
+      z-index: 10;
+    }
+    #landing-video {
+      width: 100%;
+      height: auto;
+      max-height: 100%;
+      object-fit: cover;
+    }
+    #enter-ar-button {
+      position: absolute;
+      bottom: 50px;
+      padding: 10px 20px;
+      font-size: 20px;
+      color: white;
+      background-color: #007bff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #enter-ar-button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div id="landing-page">
+    <video id="landing-video" autoplay muted playsinline>
+      <source src="your-video-url.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <button id="enter-ar-button">Poglej podatke v 3D!</button>
+  </div>
+</body>
+</html>

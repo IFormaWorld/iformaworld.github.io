@@ -3,7 +3,16 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MindARThree } from 'mindar-image-three';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const start = async () => {
+  // Function to hide landing page and start AR
+  const startAR = () => {
+    document.getElementById('landing-page').style.display = 'none';
+    startMindAR();
+  };
+
+  // Event listener for the button
+  document.getElementById('enter-ar-button').addEventListener('click', startAR);
+
+  const startMindAR = async () => {
     // Initialize MindAR
     const mindarThree = new MindARThree({
       container: document.body,
@@ -26,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
       'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20240531-razlaga-racuna-ee/assets/models/reklamacija/scene1.gltf'
     ];
 
-  // Function to load model
+    // Function to load model
     const loadModel = (url) => {
       return new Promise((resolve, reject) => {
         gltfLoader.load(url, (gltf) => {
@@ -55,6 +64,4 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error('Error loading models:', error);
     }
   };
-
-  start();
 });
