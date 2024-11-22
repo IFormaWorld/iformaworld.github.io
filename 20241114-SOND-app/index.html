@@ -3,34 +3,72 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOND</title>
     
     <style>
-      html, body {
+      /* Splošni stil za tabelo */
+      tbody {
+        display: block;
         width: 100%;
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin: 0;
-        padding: 5px;
-        font-size: 1.8em;
-        font-family: Arial, sans-serif;
-        background-color: #ebf1f1;
-        overflow-x: hidden; /* Prepreči horizontalni drsnik */        
+        table-layout: fixed; /* Omogoča, da se tabela prilagodi širini zaslona */
+        margin: 0 auto; /* Poravnava tabele na sredino */
+      }
+      
+      table {
+        display: block;
+        width: 100%;
+        table-layout: fixed; /* Omogoča, da se tabela prilagodi širini zaslona */
+        margin: 0 auto; /* Poravnava tabele na sredino */
+      }
+      
+      #warning-bar-table.full_size {
+        width: 100%;
+        table-layout: fixed; /* Omogoča, da se tabela prilagodi širini zaslona */
+        margin: 0 auto; /* Poravnava tabele na sredino */
       }
 
+      warning-bar-table.full_size {
+        width: 100%;
+        table-layout: fixed; /* Omogoča, da se tabela prilagodi širini zaslona */
+        margin: 0 auto; /* Poravnava tabele na sredino */
+      }
+
+      /* Media query za naprave z manjšimi zasloni (npr. mobilni telefoni) */
+      @media (max-width: 768px) {
+        table.full_size {
+          /* Na manjših zaslonih omogoči horizontalno pomikanje */
+          display: block;
+          overflow-x: auto;
+          white-space: nowrap; /* Prepreči prelom besed v tabeli */
+        }
+
+        .warning-bar-table {
+          /* Po potrebi prilagodi tudi širino in višino opozorilne vrstice */
+          width: 100%;
+        }
+
+        /* Mogoče prilagodite tudi višino iframe-a za boljši prikaz na manjših zaslonih */
+        #sandboxFrame {
+          width: 100%;
+          height: 400px; /* Primer višine, ki se bo prilagodila zaslonu */
+        }
+      }
+
+      
+      body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #ebf1f1;
+     }
+      
       .container {
-        height: 100vh;
-        height: 100svh;
-        width: 90%;
-        padding: 35px;
+        max-width: 400px;
+        margin: 50px auto;
+        padding: 20px;
         background: white;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        text-align: center;
-        box-sizing: border-box;
-        //margin: 0, auto, 20px;
-        margin-top: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       }
 
       .logo {
@@ -42,16 +80,10 @@
       }
       
       input[type="text"], textarea #other-service {
-        width: 99%;
-        padding: 30px;
-        border-radius: 4px;
-        border: 1px solid #444;
-        box-sizing: border-box;
-        font-size: 1.0em;
-        font-family: Arial, sans-serif;
+        width: calc(100% - 20px);
+        padding: 10px;
+        margin: 10px auto;
         color: #333; /* Barva besedila */
-        margin-top: 20px;
-        margin-bottom: 0;
       }
 
       input[type="text"]#name::placeholder {
@@ -62,14 +94,13 @@
           color: red; /* Barva placeholderja, ko je napaka */
       }
 
-
       #other-service::placeholder {
         color: #888; /* Barva placeholderja" */
       }
       
       button[type="button"] {
-        width: 50%;
-        padding: 12px;
+        width: calc(100% - 20px);
+        padding: 10px;
         margin-top: 1px;
         border: none;
         background-color: #ebf1f1;
@@ -229,12 +260,12 @@
         display: none;
         border: 4px solid #f3f3f3;
         border-top: 4px solid #007bff;
-        border-radius: 40%;
-        width: 50%;
-        height: 50%;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
         animation: spin 0.5s linear infinite;
         margin: 0 auto;
-        //margin-top: 10px;
+        margin-top: 10px;
       }
 
       @keyframes spin {
@@ -276,11 +307,11 @@
         font-size: 1.2em;
       }
 
-       /* Drobno besedilo na dnu strani */
       .footer-text {
-        font-size: 0.55em;
+        font-size: 12px;
         color: #888;
-        padding: 20px;
+        //padding: 20px;
+        margin-top: 20px;
       }
 
       /* Prilagoditve za manjše zaslone (mobilne naprave) */
@@ -313,17 +344,15 @@
           width: 100%; /* Razširi gumb za pošiljanje na celotno širino */
         }
       }
-
     </style>
   </head>
 
   <body>
     <div class="container" >
-      <!-- Logotip aplikacije -->
       <img src="https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20241114-SOND-app/SOND _365x365.png" alt="SOND logotip" class="logo">
 
       <form id="visitForm">
-        <input type="text" id="name" name="name" required placeholder="Vpiši ime oskrbovanca"><br>
+        <input type="text" id="name" name="name" required placeholder="Vpiši ime oskrbovanca/-ke"><br>
         <div id="name-error">Ime oskrbovanca je zahtevano.</div><br>
         
         <div class="button-group">
@@ -333,42 +362,45 @@
         
         <div id="services-field">
           <label for="services" class="services-label">Označi opravljene storitve:</label>
-          <!-- Gumbi za storitve -->
 
         <div class="check-list">
-          <button type="button" id="higiena" class="service-button" data-value="Pomoč pri osebni higieni">Higiena</button>
+          <button type="button" id="lasišče" class="service-button" data-value="Pomoč pri osebni higieni (nega las)">Lasišče</button>
+          <button type="button" id="britje" class="service-button" data-value="Pomoč pri osebni higieni (britje)">Britje</button>
+          <button type="button" id="nohti" class="service-button" data-value="Pomoč pri osebni higieni (nega nohtov)">Nohti</button>
+          <button type="button" id="ustnavotlina" class="service-button" data-value="Pomoč pri osebni higieni (nega ustne votline)">Ustna votlina</button>
           <button type="button" id="tusiranje" class="service-button" data-value="Pomoč pri tuširanju">Tuširanje</button>
           <button type="button" id="oblecanje" class="service-button" data-value="Pomoč pri oblačenju">Oblačenje</button>
-          <button type="button" id="nepokretni" class="service-button" data-value="Pomoč pri negi nepokretnih uporabnikov">Nepokretni</button>
-          <button type="button" id="prehrana" class="service-button" data-value="Pomoč pri pripravi obrokov">Prehrana</button>
-          <button type="button" id="demenca" class="service-button" data-value="Pomoč pri skrbi za osebo z demenco">Demenca</button>
+          <button type="button" id="postelja" class="service-button" data-value="Menjava posteljnine">Postelja</button>
+          <button type="button" id="hranjenje" class="service-button" data-value="Pomoč pri pripravi obrokov in hranjenju">Hranjenje</button>
+          <button type="button" id="dostava" class="service-button" data-value="Dostava kosila">Dostava kosila</button>
           <button type="button" id="gospodinjstvo" class="service-button" data-value="Pomoč v gospodinjstvu">Gospodinjstvo</button>
-          <button type="button" id="nakupi" class="service-button" data-value="Pomoč pri nakupih">Nakupi</button>
-          <button type="button" id="spremstvo" class="service-button" data-value="Spremstvo na sprehode">Spremstvo</button>
+          <button type="button" id="spremstvo" class="service-button" data-value="Spremstvo na sprehode, preglede itd.">Spremstvo</button>
           <button type="button" id="druzabnistvo" class="service-button" data-value="Družabništvo in učenje">Družabništvo</button>
-          <button type="button" id="varstvo" class="service-button" data-value="Varstvo oslabelih oseb">Varstvo</button>
-          <button type="button" id="kateter" class="service-button" data-value="Skrb za uporabnike s katetrom">Kateter</button>
-          <button type="button" id="aspiracija" class="service-button" data-value="Skrb za traheostomo">Aspiracija</button>
-          <button type="button" id="peg" class="service-button" data-value="Hranjenje po PEG ali NGS">PEG</button>
-          <button type="button" id="povijanje" class="service-button" data-value="Povijanja nog z elastičnimi nogavicami">Povijanje</button>
-          <button type="button" id="zdravila" class="service-button" data-value="Priprava zdravil">Zdravila</button>
+          <button type="button" id="varstvo" class="service-button" data-value="Varstvo oslabelih oseb ali oseb z boleznijo demence">Varstvo</button>
+          <button type="button" id="urinskavrecka" class="service-button" data-value="Menjava urinske vrečke pri katetru">Urinska vrečka</button>
+          <button type="button" id="povijanje" class="service-button" data-value="Povijanje nog z elastičnimi nogavicami, v terapevtske namene">Povijanje</button>
+          <button type="button" id="zdravila" class="service-button" data-value="Priprava zdravil in nadzor nad jemanjem zdravil po predpisu zdravnika">Zdravila</button>
           <button type="button" id="paliativna" class="service-button" data-value="Nega zelo oslabelih, ki so v paliativni oskrbi">Paliativna</button>
-          <button type="button" id="heparin" class="service-button" data-value="Aplikacija nizkomolekularnega heparina">Heparin</button>
+          <button type="button" id="opravki" class="service-button" data-value="Pomoč pri opravkih in nakupih">Opravki</button>
+          <button type="button" id="opravki2" class="service-button" data-value="Dodatni opravki do 30 min">Opravki 2 (+ 30 min)</button>
+          <button type="button" id="posvet" class="service-button" data-value="Posvet s strokovno delavko">Posvet</button>
           <button type="button" id="drugo" class="service-button full-width-button" data-value="Drugo" onclick="showOtherField()">Drugo/opombe</button>
 
           <textarea id="other-service" name="other-service" rows="3" style="display:none;" placeholder="Dodaj lastni zapis ..."></textarea><br>
         </div>
 
-        </div>
-
         <button type="button" id="submitButton" onclick="submitForm()">Pošlji</button>
         <div class="loader" id="loader"></div>
         <div id="success-message">
-          <span class="checkmark">&#10003;</span> Podatki so uspešno poslani!
+          <span class="checkmark">&#10003;</span> Podatki so bili uspešno poslani!
         </div>
         <div id="name-error-bottom">Ime oskrbovanca je zahtevano.</div> <!-- Novo opozorilo spodaj -->
       </form>
     </div>
+
+    <p id="successMessage" style="display: none; color: green;">Podatki so bili uspešno poslani!</p>
+    
+    <p class="footer-text">Ta obrazec je bil ustvarjen s skrbjo in <span style="color: #888;">&#10084;&#65039;</span> v <a href="https://www.iformaworld.com" target="_blank" style="color: #888; text-decoration: underline;">IForma AR Solutions</a>.</p>
 
     <script>
       let selectedOption = "";
@@ -388,26 +420,32 @@
           message: "Data recorded successfully"
         })).setMimeType(ContentService.MimeType.JSON);
       }
-
       
       function toggleSelection(option) {
-        selectedOption = option;
-        document.getElementById("checkIn").classList.remove("active");
-        document.getElementById("checkOut").classList.remove("active");
-        
-        if (option === "Prihod") {
-          document.getElementById("checkIn").classList.add("active");
-          document.getElementById("services-field").style.display = "none"; // Skrije storitve
-          document.getElementById("submitButton").style.display = "none"; // Skrije gumb Pošlji
-          document.getElementById("checkIn").setAttribute("onclick", "submitForm()"); // Gumb Prihod prevzame funkcijo Pošlji
-          submitForm(); // Samodejno pošlje podatke ob izbiri Prihod
-        } else if (option === "Odhod") {
-          document.getElementById("checkOut").classList.add("active");
-          document.getElementById("services-field").style.display = "block"; // Prikazuje storitve
-          document.getElementById("submitButton").style.display = "block"; // Pokaže gumb Pošlji
-          document.getElementById("checkIn").setAttribute("onclick", "toggleSelection('Prihod')"); // Resetira gumb Prihod
-        }
+          const checkInButton = document.getElementById("checkIn");
+          const checkOutButton = document.getElementById("checkOut");
+          const servicesField = document.getElementById("services-field");
+          const submitButton = document.getElementById("submitButton");
+
+          checkInButton.classList.remove("active");
+          checkOutButton.classList.remove("active");
+
+          if (option === "Prihod") {
+              checkInButton.classList.add("active");
+              servicesField.style.display = "none";
+              submitButton.style.display = "none";
+              checkInButton.setAttribute("onclick", "submitForm()");
+              submitForm(); // Samodejno pošlje podatke ob izbiri Prihod
+          } else if (option === "Odhod") {
+              checkOutButton.classList.add("active");
+              servicesField.style.display = "block";
+              submitButton.style.display = "block";
+              checkInButton.setAttribute("onclick", "toggleSelection('Prihod')");
+          }
+
+          selectedOption = option; // Shranite izbrano možnost
       }
+
       
        document.querySelectorAll('.service-button').forEach(button => {
         button.addEventListener('click', () => {
@@ -435,10 +473,6 @@
           nameInput.placeholder = "Vpiši ime oskrbovanca"; // Resetiraj placeholder, ko je ime vneseno
       }
 
-        if (!selectedOption) {
-          alert("Prosimo, izberite Prihod ali Odhod.");
-          return;
-        }
 
         document.getElementById("loader").style.display = "inline-block";
         document.querySelector('button[type="button"]').disabled = true;
@@ -447,7 +481,7 @@
         // Zberemo vse storitve, ki so označene (aktivni gumbi)
         let selectedServices = [];
         document.querySelectorAll('.service-button.active').forEach(function(button) {
-            selectedServices.push(button.getAttribute('data-value')); // Dobimo vrednost iz `data-value`
+            selectedServices.push(button.getAttribute('data-value')); // Dobimo vrednost iz data-value
         });
 
         // Dodamo lastni zapis iz polja "Drugo", če je prisoten
@@ -455,7 +489,6 @@
         if (otherService) {
             selectedServices.push(otherService);
         }
-
 
         navigator.geolocation.getCurrentPosition(
           function(position) {
@@ -478,27 +511,15 @@
               document.getElementById("services-field").style.display = "none";
               document.getElementById("submitButton").style.display = "none";
               document.getElementById("success-message").style.display = "block";
-
-
-              //document.getElementById("success-message").style display = "block";   
-              //document.getElementById("visitForm").reset();
-              //selectedOption = "";
-              //toggleSelection(""); // odstrani aktivni stil
             }).recordVisit(data);
           },
           function(error) {
             document.getElementById("loader").style.display = "none";
             document.querySelector('button[type="button"]').disabled = false;
-            alert("Napaka pri pridobivanju lokacije.");
+            alert("Geolokacije ni mogoče pridobiti. Prosimo, omogočite dostop do lokacije in poskusite znova.");
           }
         );
       }
     </script>
-
-    <!-- Drobno besedilo pod vsebino -->
-    <div class="footer-text">
-      Ta obrazec je bil ustvarjen s skrbjo in <span style="color: #888;">&#10084;&#65039;</span> v <a href="https://www.iformaworld.com" target="_blank" style="color: #888; text-decoration: underline;">IForma AR Solutions</a>.
-    </div>
-
   </body>
 </html>
