@@ -17,7 +17,7 @@ function submitForm() {
   // Preverimo, če je polje Ime oskrbovanca prazno
   var name = document.getElementById('name').value;
   if (!name) {
-    // Če je prazno, prikažemo napako
+    // Če je prazno, prikažemo napako  
     document.getElementById("name-error").style.display = "block";
     return; // Prekine pošiljanje obrazca, dokler ni izpolnjeno
   } else {
