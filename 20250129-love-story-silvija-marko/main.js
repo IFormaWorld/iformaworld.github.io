@@ -13,10 +13,9 @@ let images = [
 
 let index = 0;
 let textureLoader = new THREE.TextureLoader();
-let currentMesh, nextMesh;
+let currentMesh = null;
 
 init();
-animate();
 
 function init() {
     scene = new THREE.Scene();
@@ -27,44 +26,46 @@ function init() {
     renderer.xr.enabled = true;
     document.body.appendChild(renderer.domElement);
     
-    document.body.appendChild(ARButton.createButton(renderer));
+    let arButton = ARButton.createButton(renderer);
+    document.body.appendChild(arButton);
     
-    startSlideshow();
+    arButton.addEventListener('click', () => {
+        console.log("AR session started");
+        startSlideshow();
+    });
+
+    animate();
 }
 
 function startSlideshow() {
     if (index >= images.length) return;
-    
-    let material = new THREE.MeshBasicMaterial({ map: textureLoader.load(images[index]) });
-    let geometry = new THREE.PlaneGeometry(1, 1);
-    nextMesh = new THREE.Mesh(geometry, material);
-    nextMesh.position.set(0, 1, -1.5);
-    scene.add(nextMesh);
-    
-    if (currentMesh) {
-        let scaleFactor = 1.4;
-        let growAnimation = { scale: scaleFactor };
-        let shrinkAnimation = { scale: 1 };
-        
-        new THREE.AnimationMixer(currentMesh).clipAction(new THREE.AnimationClip('grow', 2, [growAnimation])).play();
-        
-        setTimeout(() => {
-            scene.remove(currentMesh);
-            currentMesh = nextMesh;
+
+    console.log(`Loading image: ${images[index]}`);
+
+    textureLoader.load(images[index], (texture) => {
+        let material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+        let geometry = new THREE.PlaneGeometry(1, 1);
+        let newMesh = new THREE.Mesh(geometry, material);
+        newMesh.position.set(0, 1, -1.5);
+        scene.add(newMesh);
+
+        if (currentMesh) {
+            let previousMesh = currentMesh;
             setTimeout(() => {
-                scene.remove(currentMesh);
-                index++;
-                startSlideshow();
+                scene.remove(previousMesh);
             }, 3000);
-        }, 2000);
-    } else {
-        currentMesh = nextMesh;
+        }
+
+        currentMesh = newMesh;
         setTimeout(() => {
-            scene.remove(currentMesh);
             index++;
             startSlideshow();
         }, 3000);
-    }
+    }, undefined, (err) => {
+        console.error(`Error loading image: ${images[index]}`, err);
+        index++;
+        startSlideshow();
+    });
 }
 
 function animate() {
