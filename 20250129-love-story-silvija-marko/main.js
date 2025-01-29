@@ -1,5 +1,5 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.136.0/build/three.module.js';
-import { ARButton } from 'https://cdn.jsdelivr.net/npm/three@0.136.0/examples/jsm/webxr/ARButton.js';
+import { MindARThree } from 'https://cdn.jsdelivr.net/npm/mindar-image-three/dist/mindar-image-three.js';
 
 let camera, scene, renderer;
 let basePath = 'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20250129-love-story-silvija-marko/assets/models/';
@@ -24,43 +24,60 @@ function init() {
     
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.xr.enabled = true;
     document.body.appendChild(renderer.domElement);
-    
-    document.body.appendChild(ARButton.createButton(renderer));
-    
-    startSlideshow();
+
+    // Začnemo z AR izkušnjo
+    startAR();
 }
 
-function startSlideshow() {
+function startAR() {
+    // Inicializacija MindAR za AR izkušnjo
+    const mindarThree = new MindARThree({
+        container: document.body, // AR bo prikazan na celotni strani
+        imageTargetSrc: 'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20250129-love-story-silvija-marko/assets/targets/razlaga-racuna.mind', // URL AR cilja
+    });
+
+    const { renderer: arRenderer, scene: arScene, camera: arCamera } = mindarThree;
+
+    scene.add(arScene); // Dodajemo AR sceno v glavno sceno
+    camera = arCamera; // Nastavimo AR kamero
+    
+    // Začnemo z MindAR
+    mindarThree.start();
+
+    // Zagon AR slajdov
+    startSlideshow(arScene);
+}
+
+function startSlideshow(arScene) {
     if (index >= images.length) return;
     
     let material = new THREE.MeshBasicMaterial({ map: textureLoader.load(images[index]) });
     let geometry = new THREE.PlaneGeometry(1, 1);
     nextMesh = new THREE.Mesh(geometry, material);
     nextMesh.position.set(0, 1, -1.5);
-    scene.add(nextMesh);
-    
+    arScene.add(nextMesh);
+
     if (currentMesh) {
         let scaleFactor = 1.4;
         let growAnimation = { scale: scaleFactor };
         let shrinkAnimation = { scale: 1 };
         
         setTimeout(() => {
-            scene.remove(currentMesh);
+            arScene.remove(currentMesh);
             currentMesh = nextMesh;
             setTimeout(() => {
-                scene.remove(currentMesh);
+                arScene.remove(currentMesh);
                 index++;
-                startSlideshow();
+                startSlideshow(arScene);
             }, 3000);
         }, 2000);
     } else {
         currentMesh = nextMesh;
         setTimeout(() => {
-            scene.remove(currentMesh);
+            arScene.remove(currentMesh);
             index++;
-            startSlideshow();
+            startSlideshow(arScene);
         }, 3000);
     }
 }
