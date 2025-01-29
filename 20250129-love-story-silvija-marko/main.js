@@ -1,5 +1,5 @@
-import * as THREE from 'three';
-import { ARButton } from 'three/examples/jsm/webxr/ARButton.js';
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.136.0/build/three.module.js';
+import { ARButton } from 'https://cdn.jsdelivr.net/npm/three@0.136.0/examples/jsm/webxr/ARButton.js';
 
 let camera, scene, renderer;
 let basePath = 'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20250129-love-story-silvija-marko/assets/models/';
@@ -13,17 +13,18 @@ let images = [
 
 let index = 0;
 let textureLoader = new THREE.TextureLoader();
-let currentMesh = null;
+let currentMesh, nextMesh;
 
 init();
+animate();
 
 function init() {
     scene = new THREE.Scene();
     
-    // Dodamo osnovno svetlobo (da ni scena pretemna)
+    // Dodamo svetlobo, da bodo slike vidne
     const light = new THREE.AmbientLight(0xffffff, 1);
     scene.add(light);
-
+    
     camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 10);
     
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -31,37 +32,27 @@ function init() {
     renderer.xr.enabled = true;
     document.body.appendChild(renderer.domElement);
     
-    let arButton = ARButton.createButton(renderer);
-    document.body.appendChild(arButton);
+    document.body.appendChild(ARButton.createButton(renderer));
     
-    // Začnemo slideshow šele po interakciji z AR gumbom
-    arButton.addEventListener('click', () => {
-        console.log("AR session started");
-        startSlideshow();
-    });
-
-    animate();
+    startSlideshow();
 }
 
 function startSlideshow() {
-    if (index >= images.length) {
-        console.log("Slideshow completed.");
-        return;
-    }
-
+    if (index >= images.length) return;
+    
     console.log(`Loading image: ${images[index]}`);
-
+    
     textureLoader.load(images[index], (texture) => {
         let material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
         let geometry = new THREE.PlaneGeometry(1, 1);
-        let newMesh = new THREE.Mesh(geometry, material);
-        newMesh.position.set(0, 1, -1.5);
-        scene.add(newMesh);
-
+        nextMesh = new THREE.Mesh(geometry, material);
+        nextMesh.position.set(0, 1, -1.5);
+        scene.add(nextMesh);
+        
         if (currentMesh) {
             let previousMesh = currentMesh;
             
-            // Počasi povečamo sliko za 40 %
+            // Počasi povečamo sliko za 40%
             let scaleFactor = 1.4;
             let growthDuration = 2000; // 2 sekundi
             
@@ -74,15 +65,13 @@ function startSlideshow() {
                 }
             }, growthDuration / 20);
 
-            // Po 3 sekundah odstranimo staro sliko
             setTimeout(() => {
                 scene.remove(previousMesh);
             }, 3000);
         }
-
-        currentMesh = newMesh;
         
-        // Naslednjo sliko prikažemo po 3 sekundah
+        currentMesh = nextMesh;
+        
         setTimeout(() => {
             index++;
             startSlideshow();
@@ -99,3 +88,4 @@ function animate() {
         renderer.render(scene, camera);
     });
 }
+
