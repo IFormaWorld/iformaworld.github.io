@@ -1,89 +1,67 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.136.0/build/three.module.js';
-import { MindARThree } from 'https://cdn.jsdelivr.net/npm/mindar-image-three/dist/mindar-image-three.js';
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MindARThree } from 'mindar-image-three';
 
-let camera, scene, renderer;
-let basePath = 'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20250129-love-story-silvija-marko/assets/models/';
-let images = [
-    'silvija1.jpg', 'silvija1bg.png', 'silvija2.jpg', 'silvija2bg.png', 'silvija3.jpg',
-    'silvija3bg.png', 'silvija4.jpeg', 'silvija4bg.png', 'silvija5.jpeg', 'silvija5bg.png',
-    'marko1.jpg', 'marko1bg.png', 'marko2.jpg', 'marko2bg.png', 'marko3.jpg',
-    'marko3bg.png', 'marko4.jpg', 'marko4bg.png', 'marko5.jpg', 'marko5bg.png',
-    'zajedno1.jpg', 'zajedno1bg.png', 'zajedno2.jpg', 'zajedno2bg.png', 'zajedno3.jpg', 'zajedno3bg.png'
-].map(img => basePath + img);
-
-let index = 0;
-let textureLoader = new THREE.TextureLoader();
-let currentMesh, nextMesh;
-
-init();
-animate();
-
-function init() {
-    scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 10);
-    
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
-
-    // Začnemo z AR izkušnjo
-    startAR();
-}
-
-function startAR() {
-    // Inicializacija MindAR za AR izkušnjo
+document.addEventListener('DOMContentLoaded', () => {
+  // Function to hide landing page and start AR
+  const startAR = () => {
+    document.getElementById('landing-page').style.display = 'none';
+    startMindAR();
+  };
+  
+  // Event listener for the button
+  document.getElementById('enter-ar-button').addEventListener('click', startAR);
+  
+  const startMindAR = async () => {
+    // Initialize MindAR
     const mindarThree = new MindARThree({
-        container: document.body, // AR bo prikazan na celotni strani
-        imageTargetSrc: 'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20250129-love-story-silvija-marko/assets/targets/razlaga-racuna.mind', // URL AR cilja
+      container: document.body,
+      imageTargetSrc: 'assets/targets/targets.mind',  // Updated to your .mind file
     });
+    const { renderer, scene, camera } = mindarThree;
 
-    const { renderer: arRenderer, scene: arScene, camera: arCamera } = mindarThree;
+    // Add light to the scene
+    const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
+    scene.add(light);
 
-    scene.add(arScene); // Dodajemo AR sceno v glavno sceno
-    camera = arCamera; // Nastavimo AR kamero
-    
-    // Začnemo z MindAR
-    mindarThree.start();
+    // Load models (images for bride, groom, and couple)
+    const textureLoader = new THREE.TextureLoader();
+    const modelUrls = [
+      'assets/models/bride/silvija1bg.png',
+      'assets/models/groom/marko1bg.png',
+      'assets/models/couple/zajedno1bg.png',
+    ];
 
-    // Zagon AR slajdov
-    startSlideshow(arScene);
-}
+    // Function to load model
+    const loadModel = (url) => {
+      return new Promise((resolve, reject) => {
+        textureLoader.load(url, (texture) => {
+          const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+          const geometry = new THREE.PlaneGeometry(1, 1);
+          const mesh = new THREE.Mesh(geometry, material);
+          mesh.scale.set(0.5, 0.5, 0.5);  // Scale the models
+          resolve(mesh);
+        }, undefined, reject);
+      });
+    };
 
-function startSlideshow(arScene) {
-    if (index >= images.length) return;
-    
-    let material = new THREE.MeshBasicMaterial({ map: textureLoader.load(images[index]) });
-    let geometry = new THREE.PlaneGeometry(1, 1);
-    nextMesh = new THREE.Mesh(geometry, material);
-    nextMesh.position.set(0, 1, -1.5);
-    arScene.add(nextMesh);
+    try {
+      const models = await Promise.all(modelUrls.map(loadModel));
 
-    if (currentMesh) {
-        let scaleFactor = 1.4;
-        let growAnimation = { scale: scaleFactor };
-        let shrinkAnimation = { scale: 1 };
-        
-        setTimeout(() => {
-            arScene.remove(currentMesh);
-            currentMesh = nextMesh;
-            setTimeout(() => {
-                arScene.remove(currentMesh);
-                index++;
-                startSlideshow(arScene);
-            }, 3000);
-        }, 2000);
-    } else {
-        currentMesh = nextMesh;
-        setTimeout(() => {
-            arScene.remove(currentMesh);
-            index++;
-            startSlideshow(arScene);
-        }, 3000);
-    }
-}
+      // Create anchors for each model
+      models.forEach((model, index) => {
+        const anchor = mindarThree.addAnchor(index);
+        anchor.group.add(model);
+      });
 
-function animate() {
-    renderer.setAnimationLoop(() => {
+      await mindarThree.start();
+
+      renderer.setAnimationLoop(() => {
         renderer.render(scene, camera);
-    });
-}
+      });
+
+    } catch (error) {
+      console.error('Error loading models:', error);
+    }
+  };
+});
