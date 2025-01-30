@@ -58,4 +58,72 @@ document.addEventListener('DOMContentLoaded', () => {
       video.loop = false;  // Remove looping
       video.muted = false;
       video.playsInline = true;
-      video.autoplay = fal
+      video.autoplay = false;
+      video.style.display = 'none'; // Hide HTML video element
+      document.body.appendChild(video);
+
+      const videoTexture = new THREE.VideoTexture(video);
+      videoTexture.minFilter = THREE.LinearFilter;
+      videoTexture.magFilter = THREE.LinearFilter;
+      videoTexture.generateMipmaps = false;
+
+      // Get video dimensions
+      video.addEventListener('loadedmetadata', () => {
+        const aspectRatio = video.videoWidth / video.videoHeight;
+        videoMesh.scale.set(aspectRatio, 1, 1);  // Maintain correct proportions
+      });
+
+      const videoMaterial = new THREE.MeshBasicMaterial({ map: videoTexture, side: THREE.DoubleSide });
+      const videoGeometry = new THREE.PlaneGeometry(1, 1);
+      const videoMesh = new THREE.Mesh(videoGeometry, videoMaterial);
+
+      // Create anchor for couple video
+      const videoAnchor = mindarThree.addAnchor(2);
+      videoAnchor.group.add(videoMesh);
+
+      // Play video when target is detected
+      videoAnchor.onTargetFound = () => {
+        video.play();
+        videoMesh.visible = true;
+      };
+
+      videoAnchor.onTargetLost = () => {
+        video.pause();
+      };
+
+      // Stop video & hide model when it ends
+      video.addEventListener('ended', () => {
+        console.log('Video končan, odstranjujem AR model.');
+        videoMesh.visible = false;  // Hide the video mesh
+      });
+
+      await mindarThree.start();
+
+      // === SMOOTHING AR OBJECT MOVEMENT ===
+      const smoothFactor = 0.2;  // Between 0 and 1 (lower = more smoothing)
+
+      const smoothTransform = (mesh, targetGroup) => {
+        mesh.position.lerp(targetGroup.position, smoothFactor);
+        mesh.quaternion.slerp(targetGroup.quaternion, smoothFactor);
+      };
+
+      renderer.setAnimationLoop(() => {
+        models.forEach((model, index) => {
+          const anchor = mindarThree.anchors[index];
+          if (anchor.group.visible) {
+            smoothTransform(model, anchor.group);
+          }
+        });
+
+        if (videoAnchor.group.visible) {
+          smoothTransform(videoMesh, videoAnchor.group);
+        }
+
+        renderer.render(scene, camera);
+      });
+
+    } catch (error) {
+      console.error('Error loading models:', error);
+    }
+  };
+});
