@@ -63,8 +63,14 @@ document.addEventListener('DOMContentLoaded', () => {
       document.body.appendChild(video);
 
       const videoTexture = new THREE.VideoTexture(video);
+      videoElement.addEventListener('ended', () => {
+        console.log('Video končan, odstranjujem AR model.');
+
+        // Skrij video mesh (da izgine iz scene)
+        videoMesh.visible = false;
+
       const videoMaterial = new THREE.MeshBasicMaterial({ map: videoTexture, side: THREE.DoubleSide });
-      const videoGeometry = new THREE.PlaneGeometry(1.2, 0.675); // Adjust aspect ratio if needed
+      const videoGeometry = new THREE.PlaneGeometry(1, 1); // Adjust aspect ratio if needed
       const videoMesh = new THREE.Mesh(videoGeometry, videoMaterial);
 
       // Create anchor for couple video
@@ -76,6 +82,29 @@ document.addEventListener('DOMContentLoaded', () => {
       videoAnchor.onTargetLost = () => video.pause();
 
       await mindarThree.start();
+
+      // Smoothing AR jittering with position averaging
+      const smoothFactor = 0.2;  // Med 0 in 1 (nižja vrednost = večje glajenje)
+
+      const smoothPosition = (mesh, targetPosition) => {
+        mesh.position.lerp(targetPosition, smoothFactor);
+      };
+
+      renderer.setAnimationLoop(() => {
+        // Povprečimo položaje za vse objekte (da zmanjšamo tresenje)
+        models.forEach((model, index) => {
+          const anchor = mindarThree.anchors[index];
+          if (anchor.group.visible) {
+            smoothPosition(model, anchor.group.position);
+          }
+        });
+
+        smoothPosition(videoMesh, videoAnchor.group.position);
+
+        renderer.render(scene, camera);
+      });
+
+
 
       renderer.setAnimationLoop(() => {
         renderer.render(scene, camera);
