@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize MindAR
     const mindarThree = new MindARThree({
       container: document.body,
-      imageTargetSrc: 'assets/targets/targets.mind',
+      imageTargetSrc: 'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20250129-love-story-silvija-marko/assets/targets/targets.mind',
     });
     const { renderer, scene, camera } = mindarThree;
 
@@ -26,8 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load image models (bride & groom)
     const textureLoader = new THREE.TextureLoader();
     const modelUrls = [
-      'assets/models/bride/silvija1bg.png',
-      'assets/models/groom/marko1bg.png',
+      'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20250129-love-story-silvija-marko/assets/models/bride/silvija1bg.png',
+      'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20250129-love-story-silvija-marko/assets/models/groom/marko1bg.png'
     ];
 
     // Function to load image model
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Load video for couple target
       const video = document.createElement('video');
-      video.src = 'assets/models/couple/theirstory.mp4';
+      video.src = 'https://cdn.jsdelivr.net/gh/IFormaWorld/iformaworld.github.io/20250129-love-story-silvija-marko/assets/models/couple/theirstory.mp4';
       video.loop = false;  // Remove looping
       video.muted = false;
       video.playsInline = true;
@@ -67,12 +67,6 @@ document.addEventListener('DOMContentLoaded', () => {
       videoTexture.magFilter = THREE.LinearFilter;
       videoTexture.generateMipmaps = false;
 
-      // Get video dimensions
-      video.addEventListener('loadedmetadata', () => {
-        const aspectRatio = video.videoWidth / video.videoHeight;
-        videoMesh.scale.set(aspectRatio, 1, 1);  // Maintain correct proportions
-      });
-
       const videoMaterial = new THREE.MeshBasicMaterial({ map: videoTexture, side: THREE.DoubleSide });
       const videoGeometry = new THREE.PlaneGeometry(1, 1);
       const videoMesh = new THREE.Mesh(videoGeometry, videoMaterial);
@@ -80,6 +74,12 @@ document.addEventListener('DOMContentLoaded', () => {
       // Create anchor for couple video
       const videoAnchor = mindarThree.addAnchor(2);
       videoAnchor.group.add(videoMesh);
+
+      // Adjust video aspect ratio dynamically
+      video.addEventListener('loadedmetadata', () => {
+        const aspectRatio = video.videoWidth / video.videoHeight;
+        videoMesh.scale.set(aspectRatio, 1, 1);
+      });
 
       // Play video when target is detected
       videoAnchor.onTargetFound = () => {
